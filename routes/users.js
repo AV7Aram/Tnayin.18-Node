@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { userReader } = require('../middleware/userReader');
 const { writeUsers } = require('../helpers/userWriter');
-const { registerSchema, loginSchema } = require('../schema/userValidation');
+const { registerSchema, loginSchema, updateUserSchema } = require('../schema/userValidation');
 
 const usersRouter = express.Router();
 
@@ -44,45 +44,108 @@ usersRouter.post('/login', userReader, async (req, res) => {
     return res.status(401).render('login', { error: 'Invalid credentials' });
   }
 
-  res.render('login', { error: null, message: `Welcome ${user.name}!` });
+  req.session = req.session || {};
+  req.session.loginMessage = `Login successful! Welcome, ${user.name}.`;
+  return res.redirect('/');
 });
 
 // GET users list (JSON)
 usersRouter.get('/users', userReader, (req, res) => {
   const { name, age } = req.query;
   let users = req.users
+  let filteredUsers = [...users];
+  let messages = [];
+
   if (name) {
-    users = users.filter(u => u.name.toLowerCase().includes(name.toLowerCase()));
-    if (users.length === 0) {
-      return res.json({ message: 'No user with that name was found.' });
+    filteredUsers = filteredUsers.filter(u =>
+      u.name.toLowerCase().includes(name.toLowerCase())
+    );
+
+    if (filteredUsers.length === 0) {
+      messages.push('No user with that name was found.');
     }
   }
 
-  if (age === 'min') {
-    users.sort((a, b) => a.age - b.age);
-  } else if (age === 'max') {
-    users.sort((a, b) => b.age - a.age);
+  if (age) {
+    if (age === 'min') {
+      filteredUsers.sort((a, b) => a.age - b.age);
+    } else if (age === 'max') {
+      filteredUsers.sort((a, b) => b.age - a.age);
+    } else {
+      messages.push('Invalid sort value. Use "min" or "max".');
+    }
   }
 
-  res.json(users)
+  if (messages.length > 0) {
+    return res.status(400).json({ messages });
+  }
+
+  res.json(filteredUsers);
 });
 
 // PUT update user
-usersRouter.put('/users/:id', userReader, (req, res) => {
+usersRouter.put('/users/:id', userReader, async (req, res) => {
   const { id } = req.params;
-  const { name, age } = req.body;
-  const users = req.users
+  const users = req.users;
+
+  const { error, value } = updateUserSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.message });
+  }
 
   const userIndex = users.findIndex(u => u.id == id);
   if (userIndex === -1) {
     return res.status(404).json({ error: 'User not found' });
   }
 
-  users[userIndex].name = name || users[userIndex].name;
-  users[userIndex].age = parseInt(age) || users[userIndex].age;
+  const user = users[userIndex];
+  const { name, age, email, password, new_password } = value;
+  const updatedFields = [];
+
+  if (name) {
+    user.name = name;
+    updatedFields.push('name');
+  }
+
+  if (typeof age !== 'undefined') {
+    user.age = age;
+    updatedFields.push('age');
+  }
+
+  if (email) {
+    const emailExists = users.some((u, i) => u.email === email && i !== userIndex);
+    if (emailExists) {
+      return res.status(400).json({ error: 'Email is already in use' });
+    }
+    user.email = email;
+    updatedFields.push('email');
+  }
+
+  if (password || new_password) {
+    if (!password || !new_password) {
+      return res.status(400).json({ error: 'Both password and new_password must be provided' });
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).json({ error: 'Incorrect current password' });
+    }
+
+    const hashed = await bcrypt.hash(new_password, 10);
+    user.password = hashed;
+    updatedFields.push('password');
+  }
+
+  if (updatedFields.length === 0) {
+    return res.status(400).json({ error: 'No valid fields provided for update' });
+  }
 
   writeUsers(users);
-  res.json({ message: 'User updated successfully' });
+
+  res.json({
+    message: 'User updated successfully',
+    updated: updatedFields
+  });
 });
 
 // DELETE user
