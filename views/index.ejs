@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Users List</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+  <div class="container">
+    <h1>Registered users</h1>
+    <% if (message) { %>
+      <p class="success"><%= message %></p>
+    <% } %>
+    <ul>
+      <% users.forEach(user=> { %>
+        <li>
+          <strong><%= user.name %></strong> — <%= user.email %> (Age <%= user.age %>)
+        </li>
+      <% }) %>
+    </ul>
+    <a href="/auth/login">Login</a> | <a href="/auth/register">Registration</a>
+  </div>
+</body>
+</html>

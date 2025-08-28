@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1756308222783,
+    "name": "Aram",
+    "email": "aram.vardanyan.07@bk.ru",
+    "password": "$2b$10$wL4G82RnKVELHiesg4iCCOR7NqGLLjLk7zPPuM/R8BlxFfDy98upS",
+    "age": 18
+  },
+  {
+    "id": 1756309930698,
+    "name": "Miro",
+    "email": "miro08@bk.ru",
+    "password": "$2b$10$lhdTK./dfTJEWLvT1bYwLuzs7q6nLAXfzIpk8IKtFr.1Gqm9A21ey",
+    "age": 19
+  },
+  {
+    "id": 3,
+    "name": "John Doe",
+    "email": "d.orlov@example.com",
+    "password": "hello2023",
+    "age": 25
+  },
+  {
+    "id": 4,
+    "name": "Maria Sokolova",
+    "email": "maria.s@example.com",
+    "password": "mariaPass1",
+    "age": 35
+  },
+  {
+    "id": 5,
+    "name": "Alexey Smirnov",
+    "email": "alex.smirnov@example.com",
+    "password": "al3xSm1r",
+    "age": 22
+  },
+  {
+    "id": 6,
+    "name": "Olga Kuznetsova",
+    "email": "olga.kuz@example.com",
+    "password": "oKu12345",
+    "age": 27
+  },
+  {
+    "id": 7,
+    "name": "Nikolay Egorov",
+    "email": "nikolay.e@example.com",
+    "password": "nePass2024",
+    "age": 40
+  },
+  {
+    "id": 8,
+    "name": "Elena Volkova",
+    "email": "elena.v@example.com",
+    "password": "elVolk88",
+    "age": 31
+  },
+  {
+    "id": 9,
+    "name": "Sergey Lebedev",
+    "email": "s.lebedev@example.com",
+    "password": "serL3b",
+    "age": 29
+  },
+  {
+    "id": 10,
+    "name": "Tatiana Morozova",
+    "email": "tatiana.m@example.com",
+    "password": "tmPass321",
+    "age": 33
+  }
+]
