@@ -75,5 +75,12 @@
     "email": "henri@gmail.com",
     "password": "$2b$10$iMl26HHiJPHlmp.4OkAFFuw9MDA9l8opPX1BSRWhpK2hi.Dx025wy",
     "age": 17
+  },
+  {
+    "id": 1756392653885,
+    "name": "Samo",
+    "email": "samo@gmail.com",
+    "password": "$2b$10$ep7Sxo9OXet9qYhnPaH3Lej9/ZOoP4E39BW.fBveDkwUAE8aA/SsC",
+    "age": 25
   }
 ]
